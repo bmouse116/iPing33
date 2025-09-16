@@ -1,0 +1,44 @@
+@use 'fonts.scss' as *;
+@use 'variables.scss' as *;
+h1 {
+    font-family: var(--font-bold);
+    font-size: 48px;
+    font-weight: 700;
+}
+
+h2 {
+    font-family: var(--font-medium);
+    font-size: 24px;
+}
+
+h3 {
+    font-family: var(--font-regular);
+    font-size: 20px;
+}
+
+h4 {
+    font-family: var(--font-light);
+    font-size: 18px;
+    font-weight: 100;
+}
+
+span {
+    font-family: var(--font-light);
+    font-size: 18px;
+}
+
+button {
+    font-family: var(--font-bold);
+    font-size: 14px;
+}
+
+a {
+  color: var(--black);
+  transition: all 0.3s ease;
+  font-family: var(--font-medium);
+  text-decoration: none;
+  cursor: pointer;
+  &:hover {
+    color: var(--primary-stroke)
+  }
+}
