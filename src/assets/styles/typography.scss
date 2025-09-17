@@ -1,35 +1,44 @@
-@use 'fonts.scss' as *;
-@use 'variables.scss' as *;
+@use "fonts.scss" as *;
+@use "variables.scss" as *;
 h1 {
-    font-family: var(--font-bold);
-    font-size: 48px;
-    font-weight: 700;
+  font-family: var(--font-bold);
+  font-size: 48px;
+  font-weight: 700;
 }
 
 h2 {
-    font-family: var(--font-medium);
-    font-size: 24px;
+  font-family: var(--font-medium);
+  font-size: 24px;
 }
 
 h3 {
-    font-family: var(--font-regular);
-    font-size: 20px;
+  font-family: var(--font-regular);
+  font-size: 20px;
 }
 
 h4 {
-    font-family: var(--font-light);
-    font-size: 18px;
-    font-weight: 100;
+  font-family: var(--font-light);
+  font-size: 18px;
+  font-weight: 100;
 }
 
 span {
-    font-family: var(--font-light);
-    font-size: 18px;
+  font-family: var(--font-light);
+  font-size: 18px;
+}
+
+p {
+  font-family: var(--font-light);
+  font-size: 14px;
+}
+
+label {
+  font-family: var(--font-light);
 }
 
 button {
-    font-family: var(--font-bold);
-    font-size: 14px;
+  font-family: var(--font-bold);
+  font-size: 14px;
 }
 
 a {
@@ -39,6 +48,6 @@ a {
   text-decoration: none;
   cursor: pointer;
   &:hover {
-    color: var(--primary-stroke)
+    color: var(--primary-stroke);
   }
 }
