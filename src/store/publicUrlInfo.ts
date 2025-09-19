@@ -14,7 +14,7 @@ export const usePublicUrl = defineStore('usePublicUrl', () => {
     const openModal = () => { isModalOpen.value = true; };
     const closeModal = () => { isModalOpen.value = false; };
 
-    const setUrlData = (data: UrlData) => { urlData.value = data; };
+    const setUrlData = (data: UrlData | null) => { urlData.value = data; };
 
     return {
         isModalOpen,
