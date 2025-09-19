@@ -1,5 +1,5 @@
 <template>
-    <div class="functional" ref="mainRef">
+    <div class="functional" ref="mainRef" id="instruments">
         <div class="container">
             <h2 class="title">Исследуйте нашу функциональную галактику</h2>
             <p class="subtitle">

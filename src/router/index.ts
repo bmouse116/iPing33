@@ -1,3 +1,4 @@
+import LKPage from "@/pages/LKPage.vue";
 import Login from "@/pages/Login.vue";
 import MainPage from "@/pages/MainPage/MainPage.vue";
 import Register from "@/pages/Register.vue";
@@ -18,6 +19,11 @@ const routes = [
     path: '/login',
     name: "Login",
     component: Login
+  },
+  {
+    path: '/lk',
+    name: 'LKPage',
+    component: LKPage
   }
 ];
 

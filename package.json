@@ -16,6 +16,7 @@
   },
   "dependencies": {
     "@tabler/icons-vue": "^3.35.0",
+    "axios": "^1.12.2",
     "gsap": "^3.13.0",
     "pinia": "^3.0.3",
     "sass": "^1.92.1",

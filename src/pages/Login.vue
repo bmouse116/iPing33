@@ -2,21 +2,23 @@
     <div class="register-page">
         <div class="register-container">
             <div class="form-wrapper">
-                <form action="post" @submit.prevent>
+                <form action="post" @submit.prevent="login">
                     <div class="form-block">
                         <h2>Авторизация</h2>
                         <div class="input-group">
                             <div class="group">
                                 <label for="email">Email</label>
-                                <TheInput id="email" input-type="email" placeholder-text="Введите email"></TheInput>
+                                <TheInput id="email" input-type="email" placeholder-text="Введите email"
+                                    v-model="emailValue"></TheInput>
                             </div>
                             <div class="group">
                                 <label for="password">Пароль</label>
-                                <TheInput id="password" input-type="password" placeholder-text="Введите пароль">
+                                <TheInput id="password" input-type="password" placeholder-text="Введите пароль"
+                                    v-model="passwordValue">
                                 </TheInput>
                             </div>
                         </div>
-                        <TheButton>Войти</TheButton>
+                        <TheButton type="submit">Войти</TheButton>
                     </div>
                 </form>
             </div>
@@ -30,11 +32,40 @@
 <script setup lang="ts">
 import TheButton from '@/components/UI/TheButton.vue';
 import TheInput from '@/components/UI/TheInput.vue';
+import { useUserStore } from '@/store/userStore';
+import axios from 'axios';
+import { ref } from 'vue';
 import { useRouter } from 'vue-router';
+const apiUrl = import.meta.env.VITE_API
+const userStore = useUserStore()
 const router = useRouter()
-
+const emailValue = ref("")
+const passwordValue = ref("")
 const back = () => {
     router.push('/')
+}
+
+const login = async () => {
+    if (!emailValue.value || !passwordValue.value) {
+        alert("Пожалуйста, заполните все поля!");
+        return;
+    }
+    try {
+        const response = await axios.post(`${apiUrl}/login`, {
+            email: emailValue.value,
+            password: passwordValue.value
+        })
+        userStore.setUser(response.data.user, response.data.token);
+        router.push('/lk')
+    }
+    catch (error: any) {
+        if (error.response) {
+            alert("Ошибка авторизации: " + error.response.data.message);
+            console.error("Ошибка сервера:", error.response.data);
+        } else {
+            console.error("Ошибка сети:", error.message);
+        }
+    }
 }
 </script>
 
