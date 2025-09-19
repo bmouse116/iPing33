@@ -13,6 +13,7 @@
     <section class="final-cta-section">
       <FinalCTA />
     </section>
+    <UrlModal v-if="modalVisible.isModalOpen" />
   </div>
 </template>
 
@@ -22,6 +23,9 @@ import FinalCTA from "@/pages/MainPage/components/FinalCTA.vue";
 import FunctionalSection from "@/pages/MainPage/components/FunctionalSection.vue";
 import MainSearch from "@/pages/MainPage/components/MainSearch.vue";
 import TheHeader from "@/components/TheHeader.vue";
+import UrlModal from "@/components/urlModal.vue";
+import { usePublicUrl } from "@/store/publicUrlInfo";
+const modalVisible = usePublicUrl()
 </script>
 
 <style scoped lang="scss">

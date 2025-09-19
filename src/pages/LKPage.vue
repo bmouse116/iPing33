@@ -20,7 +20,7 @@ const toBack = () => {
 
 const logout = async () => {
     try {
-        const response = await axios.post(`${apiUrl}/logout`, {}, {
+        const response = await axios.post("api/logout", {}, {
             headers: {
                 Authorization: `Bearer ${userStore.token}`
             }

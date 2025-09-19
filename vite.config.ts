@@ -10,6 +10,16 @@ export default defineConfig({
     vue(),
     vueDevTools(),
   ],
+  server: {
+    proxy: {
+      "/api": {
+        target: "https://185.185.143.72:443",
+        changeOrigin: true,
+        secure: false, // игнорируем недоверенный SSL
+        //rewrite: (path) => path.replace(/^\/api/, "")
+      }
+    }
+  },
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url))

@@ -10,7 +10,12 @@
         </h4>
         <h4>Авторизуйтесь для получения более детальной статистики</h4>
       </div>
-      <TheInput placeholder-text="Введите URL" />
+      <div class="check-status">
+        <TheInput placeholder-text="Введите URL" v-model="store.urlValue" />
+        <TheButton @click="checkUrl">
+          <IconBroadcast class="icon">Проверить</IconBroadcast>
+        </TheButton>
+      </div>
     </div>
     <div class="image-group">
       <img src="/src/assets/img/042.svg" alt="" class="img-1" />
@@ -25,6 +30,26 @@ import { ref, onMounted } from "vue";
 import TheInput from "@/components/UI/TheInput.vue";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import TheButton from "@/components/UI/TheButton.vue";
+import { checkStatus } from "@/composables/publicUrlStatus";
+import { IconBroadcast } from "@tabler/icons-vue";
+import { usePublicUrl } from "@/store/publicUrlInfo";
+const urlValue = ref("")
+const store = usePublicUrl()
+const checkUrl = async () => {
+  if (!store.urlValue) return alert("Введите URL!");
+
+  store.openModal(); // открываем модалку до запроса
+  store.setUrlData(null); // обнуляем предыдущие данные
+
+  try {
+    const response = await checkStatus(store.urlValue);
+    store.setUrlData(response); // сохраняем данные в стор
+  } catch (error) {
+    console.error(error);
+    store.setUrlData({ url: store.urlValue, status: "Ошибка", response_time_ms: 0 });
+  }
+};
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -110,9 +135,21 @@ onMounted(() => {
       gap: 10px;
     }
 
-    input {
-      z-index: 2;
-      width: 600px;
+    .check-status {
+      display: flex;
+      width: 800px;
+      gap: 20px;
+      justify-content: center;
+      align-items: center;
+
+      input {
+        z-index: 2;
+        width: 600px;
+      }
+
+      .icon {
+        color: white;
+      }
     }
   }
 }

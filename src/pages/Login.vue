@@ -51,7 +51,7 @@ const login = async () => {
         return;
     }
     try {
-        const response = await axios.post(`${apiUrl}/login`, {
+        const response = await axios.post("api/login", {
             email: emailValue.value,
             password: passwordValue.value
         })
