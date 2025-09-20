@@ -8,6 +8,15 @@
                 <p><strong>URL:</strong> {{ store.urlData.url }}</p>
                 <p><strong>Статус:</strong> {{ store.urlData.status }}</p>
                 <p><strong>Время ответа:</strong> {{ store.urlData.response_time_ms }} ms</p>
+                <hr />
+                <p><strong>SSL сертификат:</strong>
+                    <span :style="{ color: store.urlData.ssl_valid ? 'lightgreen' : 'red' }">
+                        {{ store.urlData.ssl_valid ? 'Действителен' : 'Недействителен' }}
+                    </span>
+                </p>
+                <p><strong>Истекает:</strong> {{ store.urlData.ssl_expires_at }}</p>
+                <p><strong>Дней до окончания:</strong> {{ store.urlData.ssl_days_left }}</p>
+                <p v-if="store.urlData.ssl_error"><strong>Ошибка SSL:</strong> {{ store.urlData.ssl_error }}</p>
             </template>
 
             <template v-else>

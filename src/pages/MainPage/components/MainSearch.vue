@@ -47,7 +47,15 @@ const checkUrl = async () => {
     store.setUrlData(response); // сохраняем данные в стор
   } catch (error) {
     console.error(error);
-    store.setUrlData({ url: store.urlValue, status: "Ошибка", response_time_ms: 0 });
+    store.setUrlData({
+      url: store.urlValue,
+      status: "Ошибка",
+      response_time_ms: 0,
+      ssl_valid: false,
+      ssl_expires_at: "",
+      ssl_days_left: "",
+      ssl_error: "Ошибка при получении данных"
+    });
   }
 };
 

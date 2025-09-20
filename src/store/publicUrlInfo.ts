@@ -5,6 +5,10 @@ interface UrlData {
     status: string;
     url: string;
     response_time_ms: number;
+    ssl_valid: boolean;
+    ssl_expires_at: string;
+    ssl_days_left: string;
+    ssl_error: string;
 }
 export const usePublicUrl = defineStore('usePublicUrl', () => {
     const isModalOpen = ref(false);

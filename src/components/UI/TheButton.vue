@@ -15,7 +15,7 @@ defineProps({
 <style scoped lang="scss">
 .btn {
   border-radius: 14px;
-  height: 36px;
+  height: 40px;
   padding: 0px 30px;
   color: var(--black);
   background-color: var(--primary);
