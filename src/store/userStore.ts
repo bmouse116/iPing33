@@ -3,10 +3,10 @@ import { defineStore } from 'pinia';
 import { ref } from 'vue';
 
 export const useUserStore = defineStore('user', () => {
-  const user = ref<{ id: number; name: string; email: string; created_at: string } | null>(null);
+  const user = ref<{ id: number; name: string; email: string; created_at: string; notify_email: string; notify_mobile: string; notify_telegram: string } | null>(null);
   const token = ref<string | null>(localStorage.getItem('token') || null);
 
-  const setUser = (userData: { id: number; name: string; email: string; created_at: string }, userToken: string) => {
+  const setUser = (userData: { id: number; name: string; email: string; created_at: string; notify_email: string; notify_mobile: string; notify_telegram: string }, userToken: string) => {
     user.value = userData;
     token.value = userToken;
     localStorage.setItem('token', userToken);
@@ -25,6 +25,7 @@ export const useUserStore = defineStore('user', () => {
           headers: { Authorization: `Bearer ${token.value}` }
         });
         user.value = response.data;
+        console.log(response.data)
       } catch (err) {
         logout();
       }

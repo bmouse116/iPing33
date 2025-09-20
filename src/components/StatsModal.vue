@@ -11,8 +11,9 @@
 
             <div class="modal-body">
                 <div class="main">
-                    <!-- <canvas ref="chartRef" width="400" height="400"></canvas> -->
-                    <component :is="activeComponent" :site="currentSite" />
+                    <KeepAlive>
+                        <component :is="activeComponent" :site="currentSite" :stats="siteStats" />
+                    </KeepAlive>
                 </div>
 
                 <div class="sidebar">
@@ -45,9 +46,10 @@ import UptimeChart from "./ModalTabs/UptimeChart.vue";
 import Endpoints from "./ModalTabs/Endpoints.vue";
 import TheInput from "./UI/TheInput.vue";
 import TheButton from "./UI/TheButton.vue";
+import PerformanceChart from "./ModalTabs/PerformanceChart.vue";
 
 Chart.register(DoughnutController, ArcElement, Tooltip, Legend);
-
+const siteStats = ref<any>(null);
 const modal = useSiteModal();
 const useSite = useSitesStore();
 const userStore = useUserStore();
@@ -60,7 +62,8 @@ const currentSite = computed(() => {
 
 const tabs = [
     { id: "uptime", title: "Время работы", component: UptimeChart },
-    { id: "endpoints", title: "Эндпоинты", component: Endpoints }
+    { id: "endpoints", title: "Эндпоинты", component: Endpoints },
+    { id: "performance", title: "Производительность", component: PerformanceChart }
 ];
 
 const activeTab = ref("uptime");
@@ -74,44 +77,21 @@ const fetchStats = async () => {
     const site = currentSite.value;
     if (!site) return;
 
-    const params = {
-        url: site.url,
-        date_from: "2025-09-19",
-        date_to: "2025-09-20",
-    };
+    siteStats.value = null;
 
     try {
         const response = await axios.get(`api/sites/${site.id}/stats`, {
             headers: { Authorization: `Bearer ${userStore.token}` },
-            params,
+            params: {
+                date_from: "2025-09-19",
+                date_to: "2025-09-20",
+            },
         });
+        siteStats.value = response.data;
+        console.log("Статистика загружена и сохранена:", siteStats.value);
 
-        const { uptime_percent, down_time_percent } = response.data;
-
-        if (chartRef.value) {
-            if (chartInstance) chartInstance.destroy(); // удаляем старую диаграмму
-            chartInstance = new Chart(chartRef.value, {
-                type: "doughnut",
-                data: {
-                    labels: ["Время работы", "Время простоя"],
-                    datasets: [
-                        {
-                            data: [uptime_percent, down_time_percent],
-                            backgroundColor: ["#22c55e", "#ef4444"], // зелёный и красный
-                        },
-                    ],
-                },
-                options: {
-                    responsive: true,
-                    plugins: {
-                        legend: { position: "bottom" },
-                    },
-                },
-            });
-        }
-        console.log(response.data)
     } catch (err) {
-        console.error("Ошибка при загрузке сайта:", err);
+        console.error("Ошибка при загрузке статистики:", err);
     }
 };
 
@@ -130,7 +110,6 @@ const addEndpoint = async () => {
         console.log("Эндпоинт добавлен:", response.data);
         newEndpoint.value = "";
 
-        // Обновляем локальный объект currentSite, чтобы сразу видеть новый endpoint
         await useSite.loadSiteById(currentSite.value.id);
     } catch (err) {
         console.error("Ошибка при добавлении эндпоинта:", err);
@@ -141,16 +120,17 @@ watch(
     () => modal.siteId,
     async (id) => {
         if (id) {
-            await useSite.loadSiteById(id);
+            await useSite.loadSiteById(id); // Загружаем основную инфу (включая эндпоинты)
+            await fetchStats(); // Сразу же загружаем статистику
             console.log("Загруженный сайт:", currentSite.value);
         }
     },
     { immediate: true }
 );
 
-onMounted(() => {
-    fetchStats();
-});
+// onMounted(() => {
+//     fetchStats();
+// });
 </script>
 
 

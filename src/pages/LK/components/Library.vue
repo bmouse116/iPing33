@@ -13,6 +13,9 @@
                             :class="{ green: site.status === 'online', red: site.status === 'offline' }"></span>
                         <span>{{ site.status }}</span>
                     </div>
+                    <TheButton class="delete-btn" @click.stop="deleteSite(site.id)" title="Удалить сайт">
+                        <IconTrash class="icon" />
+                    </TheButton>
                 </div>
             </template>
 
@@ -28,12 +31,20 @@
 
 <script setup lang="ts">
 import StatsModal from '@/components/StatsModal.vue';
+import TheButton from '@/components/UI/TheButton.vue';
 import TheLoader from '@/components/UI/TheLoader.vue';
 import { useSitesStore } from '@/store/libraryStore';
 import { useSiteModal } from '@/store/statsModal';
 import { formatDate } from '@/utils/getDate';
+import { IconTrash } from '@tabler/icons-vue';
 const modal = useSiteModal()
 const librarySites = useSitesStore()
+
+const deleteSite = async (id: number) => {
+    if (confirm('Вы уверены, что хотите удалить этот сайт?')) {
+        await librarySites.deleteSiteById(id);
+    }
+};
 </script>
 
 <style scoped lang="scss">
@@ -78,6 +89,7 @@ const librarySites = useSitesStore()
             display: flex;
             flex-direction: column;
             gap: 10px;
+            width: 50%;
 
             h4 {
                 color: rgba(255, 255, 255, 0.6);

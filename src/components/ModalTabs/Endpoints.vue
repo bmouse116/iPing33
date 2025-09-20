@@ -16,7 +16,7 @@
                     <div class="status">
                         <span class="circle"
                             :class="{ green: ep.status === 'online', red: ep.status === 'offline' }"></span>
-                        <span>{{ site.http_code }}</span>
+                        <span>{{ ep.http_code }}</span>
                     </div>
                 </div>
             </li>
@@ -28,7 +28,7 @@
 
 <script setup lang="ts">
 import { computed } from "vue";
-const props = defineProps<{ site: any }>();
+const props = defineProps<{ site: any; stats: any }>();
 
 // Простейшее форматирование даты
 const formatDate = (dateStr: string) => {

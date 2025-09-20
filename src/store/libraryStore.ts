@@ -50,5 +50,25 @@ export const useSitesStore = defineStore('sites', () => {
     }
   };
 
-  return { sites, loadSites, addSite, loadSiteById };
+  const deleteSiteById = async (id: number) => {
+    if (!userStore.token) return;
+
+    try {
+      // Отправляем GET-запрос на эндпоинт удаления с токеном авторизации
+      await axios.get(`api/sites/${id}/delete`, {
+        headers: { Authorization: `Bearer ${userStore.token}` },
+      });
+
+      // При успехе - удаляем сайт из локального массива, чтобы UI обновился
+      sites.value = sites.value.filter((site) => site.id !== id);
+      
+      console.log(`Сайт с ID ${id} успешно удален.`);
+
+    } catch (err) {
+      console.error(`Ошибка при удалении сайта с ID ${id}:`, err);
+      // Здесь можно добавить логику для отображения ошибки пользователю
+    }
+  };
+
+  return { sites, loadSites, addSite, loadSiteById, deleteSiteById };
 });
