@@ -11,16 +11,22 @@
 
             <div class="modal-body">
                 <div class="main">
-                    <canvas ref="chartRef" width="400" height="400"></canvas>
+                    <!-- <canvas ref="chartRef" width="400" height="400"></canvas> -->
+                    <component :is="activeComponent" :site="currentSite" />
                 </div>
 
                 <div class="sidebar">
                     <h4>Меню</h4>
                     <ul>
-                        <li>Время работы</li>
-                        <li>SSL</li>
-                        <li>Еще какая то диаграмма</li>
+                        <li v-for="tab in tabs" :key="tab.id" :class="{ active: activeTab === tab.id }"
+                            @click="activeTab = tab.id">
+                            {{ tab.title }}
+                        </li>
                     </ul>
+                    <div class="add-endpoint">
+                        <TheInput type="text" v-model="newEndpoint" placeholder="Введите путь эндпоинта" />
+                        <TheButton @click="addEndpoint">Добавить</TheButton>
+                    </div>
                 </div>
             </div>
         </div>
@@ -31,11 +37,14 @@
 import { ref, onMounted, computed, watch } from "vue";
 import { useSitesStore } from "@/store/libraryStore";
 import { useSiteModal } from "@/store/statsModal";
-import TheButton from "./UI/TheButton.vue";
 import { IconSquareX } from "@tabler/icons-vue";
 import axios from "axios";
 import { useUserStore } from "@/store/userStore";
 import { Chart, DoughnutController, ArcElement, Tooltip, Legend } from "chart.js";
+import UptimeChart from "./ModalTabs/UptimeChart.vue";
+import Endpoints from "./ModalTabs/Endpoints.vue";
+import TheInput from "./UI/TheInput.vue";
+import TheButton from "./UI/TheButton.vue";
 
 Chart.register(DoughnutController, ArcElement, Tooltip, Legend);
 
@@ -47,6 +56,18 @@ let chartInstance: Chart | null = null;
 
 const currentSite = computed(() => {
     return useSite.sites.find(site => site.id === modal.siteId) || null;
+});
+
+const tabs = [
+    { id: "uptime", title: "Время работы", component: UptimeChart },
+    { id: "endpoints", title: "Эндпоинты", component: Endpoints }
+];
+
+const activeTab = ref("uptime");
+
+// динамическая ссылка на компонент
+const activeComponent = computed(() => {
+    return tabs.find(tab => tab.id === activeTab.value)?.component || null;
 });
 
 const fetchStats = async () => {
@@ -94,11 +115,37 @@ const fetchStats = async () => {
     }
 };
 
+const newEndpoint = ref("");
+
+const addEndpoint = async () => {
+    if (!newEndpoint.value || !currentSite.value) return;
+
+    try {
+        const response = await axios.post(
+            `api/sites/${currentSite.value.id}/endpoints`,
+            { path: newEndpoint.value },
+            { headers: { Authorization: `Bearer ${userStore.token}` } }
+        );
+
+        console.log("Эндпоинт добавлен:", response.data);
+        newEndpoint.value = "";
+
+        // Обновляем локальный объект currentSite, чтобы сразу видеть новый endpoint
+        await useSite.loadSiteById(currentSite.value.id);
+    } catch (err) {
+        console.error("Ошибка при добавлении эндпоинта:", err);
+    }
+};
+
 watch(
     () => modal.siteId,
-    () => {
-        fetchStats();
-    }
+    async (id) => {
+        if (id) {
+            await useSite.loadSiteById(id);
+            console.log("Загруженный сайт:", currentSite.value);
+        }
+    },
+    { immediate: true }
 );
 
 onMounted(() => {
@@ -199,5 +246,21 @@ onMounted(() => {
             }
         }
     }
+}
+
+.add-endpoint {
+    margin-top: auto; // прикрепляем к низу sidebar
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+
+    input {
+        padding: 8px;
+        border-radius: 6px;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        background: rgba(15, 23, 42, 0.8);
+        color: white;
+    }
+
 }
 </style>
